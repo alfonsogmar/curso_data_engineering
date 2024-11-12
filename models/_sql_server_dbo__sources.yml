@@ -1,0 +1,107 @@
+version: 2
+
+sources:
+
+  - name: sql_server_dbo # name of the source 
+    schema: sql_server_dbo # this is the schema our raw data lives in
+    database: ALUMNO3_DEV_BRONZE_DB # this is the name of our database
+
+    quoting:
+      database: false
+      schema: false
+      identifier: false
+
+    freshness:
+      warn_after: {count: 24, period: hour}
+      error_after: {count: 48, period: day}
+
+    loaded_at_field: _fivetran_synced
+
+    tables:
+
+      - name: addresses
+        
+        columns:
+          - name: address
+          - name: address_id
+          - name: country
+          - name: state
+          - name: zipcode
+          - name: _fivetran_deleted
+          - name: _fivetran_synced
+
+      - name: events
+
+        columns:
+          - name: event_id
+          - name: event_type
+          - name: created_at
+          - name: order_id
+          - name: page_url
+          - name: product_id
+          - name: session_id
+          - name: user_id
+          - name: _fivetran_deleted
+          - name: _fivetran_synced
+
+      - name: orders
+
+        columns:
+          - name: address_id
+          - name: created_at
+          - name: delivered_at
+          - name: estimated_delivery_at
+          - name: order_cost
+          - name: order_id
+          - name: order_total
+          - name: promo_id
+          - name: shipping_cost
+          - name: shipping_service
+          - name: status
+          - name: tracking_id
+          - name: user_id
+          - name: _fivetran_deleted
+          - name: _fivetran_synced
+
+      - name: order_items
+
+        columns:
+          - name: order_id
+          - name: product_id
+          - name: quantity
+          - name: _fivetran_deleted
+          - name: _fivetran_synced
+
+      - name: products
+
+        columns:
+          - name: inventory
+          - name: name
+          - name: price
+          - name: product_id
+          - name: _fivetran_deleted
+          - name: _fivetran_synced
+      
+      - name: promos
+
+        columns:
+          - name: discount
+          - name: promo_id
+          - name: status
+          - name: _fivetran_deleted
+          - name: _fivetran_synced
+
+      - name: users
+
+        columns:
+          - name: address_id
+          - name: created_at
+          - name: email
+          - name: first_name
+          - name: last_name
+          - name: phone_number
+          - name: total_orders
+          - name: updated_at
+          - name: user_id
+          - name: _fivetran_deleted
+          - name: _fivetran_synced
