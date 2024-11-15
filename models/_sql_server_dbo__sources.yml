@@ -22,8 +22,11 @@ sources:
       - name: addresses
         
         columns:
-          - name: address
           - name: address_id
+            tests:
+              - unique
+              - not_null
+          - name: address
           - name: country
           - name: state
           - name: zipcode
@@ -34,6 +37,9 @@ sources:
 
         columns:
           - name: event_id
+            tests:
+              - unique
+              - not_null
           - name: event_type
           - name: created_at
           - name: order_id
@@ -48,18 +54,38 @@ sources:
 
         columns:
           - name: address_id
+            tests:
+              - not_null
+              - relationships:
+                  field: address_id
+                  to: source('sql_server_dbo','addresses')
           - name: created_at
           - name: delivered_at
           - name: estimated_delivery_at
           - name: order_cost
           - name: order_id
+            tests:
+              - not_null
+              - relationships:
+                  field: order_id
+                  to: source('sql_server_dbo','orders')
           - name: order_total
           - name: promo_id
+            tests:
+              - not_null
+              - relationships:
+                  field: promo_id
+                  to: source('sql_server_dbo','promos')
           - name: shipping_cost
           - name: shipping_service
           - name: status
           - name: tracking_id
           - name: user_id
+            tests:
+            - not_null
+            - relationships:
+                  field: user_id
+                  to: source('sql_server_dbo','users')
           - name: _fivetran_deleted
           - name: _fivetran_synced
 
@@ -67,7 +93,17 @@ sources:
 
         columns:
           - name: order_id
+            tests:
+              - not_null
+              - relationships:
+                  field: order_id
+                  to: source('sql_server_dbo','orders')
           - name: product_id
+            tests:
+              - not_null
+              - relationships:
+                  field: product_id
+                  to: source('sql_server_dbo','products')
           - name: quantity
           - name: _fivetran_deleted
           - name: _fivetran_synced
@@ -75,18 +111,24 @@ sources:
       - name: products
 
         columns:
+          - name: product_id
+            tests:
+              - unique
+              - not_null
           - name: inventory
           - name: name
           - name: price
-          - name: product_id
           - name: _fivetran_deleted
           - name: _fivetran_synced
       
       - name: promos
 
         columns:
-          - name: discount
           - name: promo_id
+            tests:
+              - unique
+              - not_null
+          - name: discount
           - name: status
           - name: _fivetran_deleted
           - name: _fivetran_synced
@@ -94,7 +136,15 @@ sources:
       - name: users
 
         columns:
+          - name: user_id
+            tests:
+              - unique
+              - not_null
           - name: address_id
+            tests:
+              - relationships:
+                  field: address_id
+                  to: source('sql_server_dbo','addresses')
           - name: created_at
           - name: email
           - name: first_name
@@ -102,6 +152,5 @@ sources:
           - name: phone_number
           - name: total_orders
           - name: updated_at
-          - name: user_id
           - name: _fivetran_deleted
           - name: _fivetran_synced
