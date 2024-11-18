@@ -105,6 +105,10 @@ sources:
                   field: product_id
                   to: source('sql_server_dbo','products')
           - name: quantity
+            tests:
+              - dbt_utils.accepted_range:
+                  min_value: 0
+                  inclusive: false
           - name: _fivetran_deleted
           - name: _fivetran_synced
 
@@ -130,6 +134,9 @@ sources:
               - not_null
           - name: discount
           - name: status
+            tests:
+              - accepted_values:
+                  values: ["active", "inactive"]
           - name: _fivetran_deleted
           - name: _fivetran_synced
 
