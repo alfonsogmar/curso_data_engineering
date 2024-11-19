@@ -15,7 +15,7 @@ renamed_casted_hashed AS (
         promo_id AS promo_desc,
         to_numeric((discount/100), 5, 2) AS discount,
         (status='active') AS is_active,
-        {{ dbt_date.convert_timezone( '_fivetran_synced', "Europe/Kiev", "UTC") }} AS load_date
+        CONVERT_TIMEZONE( 'UTC' , _fivetran_synced ) AS load_date
     FROM src_promos
     UNION ALL
     SELECT 

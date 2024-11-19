@@ -1,0 +1,20 @@
+version: 2
+
+models:
+  - name: stg_sql_server_dbo__promos
+    # latest_version: 1
+    config:
+      materialized: view
+      contract:
+        enforced: false
+    description: >
+      Information about promotions applied to orders
+    columns:
+      - name: promo_id
+        data_type: varchar
+      - name: promo_desc
+        data_type: int
+      - name: discount
+        data_type: float
+      - name: date_load
+        data_type: TIMESTAMP_NTZ
