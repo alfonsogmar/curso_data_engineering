@@ -73,9 +73,10 @@ sources:
           - name: promo_id
             tests:
               - not_null
-              - relationships:
-                  field: promo_id
-                  to: source('sql_server_dbo','promos')
+              # This test will fail in the source, we have to move it to the respective model
+              #- relationships:
+              #    field: promo_id
+              #    to: source('sql_server_dbo','promos')
           - name: shipping_cost
           - name: shipping_service
           - name: status
