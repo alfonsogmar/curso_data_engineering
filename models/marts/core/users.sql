@@ -6,7 +6,7 @@
 
 WITH stg_users AS (
     SELECT * 
-    FROM {{ ref('stg_sql_server_dbg__users') }}
+    FROM {{ ref('stg_sql_server_dbo__users') }}
 ),
 
 
