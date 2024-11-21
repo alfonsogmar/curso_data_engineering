@@ -1,0 +1,164 @@
+version: 2
+
+sources:
+
+  - name: sql_server_dbo # name of the source 
+    schema: sql_server_dbo # this is the schema our raw data lives in
+    database: "{{ env_var('DBT_ENVIRONMENTS') }}_BRONZE_DB" # this is the name of our database
+
+    quoting:
+      database: false
+      schema: false
+      identifier: false
+
+    freshness:
+      warn_after: {count: 24, period: hour}
+      error_after: {count: 48, period: day}
+
+    loaded_at_field: _fivetran_synced
+
+    tables:
+
+      - name: addresses
+        
+        columns:
+          - name: address_id
+            tests:
+              - unique
+              - not_null
+          - name: address
+          - name: country
+          - name: state
+          - name: zipcode
+          - name: _fivetran_deleted
+          - name: _fivetran_synced
+
+      - name: events
+
+        columns:
+          - name: event_id
+            tests:
+              - unique
+              - not_null
+          - name: event_type
+          - name: created_at
+          - name: order_id
+          - name: page_url
+          - name: product_id
+          - name: session_id
+          - name: user_id
+          - name: _fivetran_deleted
+          - name: _fivetran_synced
+
+      - name: orders
+
+        columns:
+          - name: address_id
+            tests:
+              - not_null
+              - relationships:
+                  field: address_id
+                  to: source('sql_server_dbo','addresses')
+          - name: created_at
+          - name: delivered_at
+          - name: estimated_delivery_at
+          - name: order_cost
+          - name: order_id
+            tests:
+              - not_null
+              - relationships:
+                  field: order_id
+                  to: source('sql_server_dbo','orders')
+          - name: order_total
+          - name: promo_id
+            tests:
+              - not_null
+              # This test will fail in the source, we have to move it to the respective model
+              #- relationships:
+              #    field: promo_id
+              #    to: source('sql_server_dbo','promos')
+          - name: shipping_cost
+          - name: shipping_service
+          - name: status
+          - name: tracking_id
+          - name: user_id
+            tests:
+            - not_null
+            - relationships:
+                  field: user_id
+                  to: source('sql_server_dbo','users')
+          - name: _fivetran_deleted
+          - name: _fivetran_synced
+
+      - name: order_items
+
+        columns:
+          - name: order_id
+            tests:
+              - not_null
+              - relationships:
+                  field: order_id
+                  to: source('sql_server_dbo','orders')
+          - name: product_id
+            tests:
+              - not_null
+              - relationships:
+                  field: product_id
+                  to: source('sql_server_dbo','products')
+          - name: quantity
+            tests:
+              - dbt_utils.accepted_range:
+                  min_value: 0
+                  inclusive: false
+          - name: _fivetran_deleted
+          - name: _fivetran_synced
+
+      - name: products
+
+        columns:
+          - name: product_id
+            tests:
+              - unique
+              - not_null
+          - name: inventory
+          - name: name
+          - name: price
+          - name: _fivetran_deleted
+          - name: _fivetran_synced
+      
+      - name: promos
+
+        columns:
+          - name: promo_id
+            tests:
+              - unique
+              - not_null
+          - name: discount
+          - name: status
+            tests:
+              - accepted_values:
+                  values: ["active", "inactive"]
+          - name: _fivetran_deleted
+          - name: _fivetran_synced
+
+      - name: users
+
+        columns:
+          - name: user_id
+            tests:
+              - unique
+              - not_null
+          - name: address_id
+            tests:
+              - relationships:
+                  field: address_id
+                  to: source('sql_server_dbo','addresses')
+          - name: created_at
+          - name: email
+          - name: first_name
+          - name: last_name
+          - name: phone_number
+          - name: total_orders
+          - name: updated_at
+          - name: _fivetran_deleted
+          - name: _fivetran_synced
