@@ -16,7 +16,7 @@ renamed_casted AS (
         zipcode,
         country,
         state,
-        CONVERT_TIMEZONE('UTC', _fivetran_synced) AS load_date
+        CONVERT_TIMEZONE('UTC', _fivetran_synced) AS load_date_utc
     FROM src_addresses
     )
 

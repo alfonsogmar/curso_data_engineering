@@ -4,16 +4,16 @@
   )
 }}
 
-WITH src_orders AS (
+WITH base_orders AS (
     SELECT * 
-    FROM {{ source('sql_server_dbo', 'orders') }}
+    FROM {{ref('base_sql_server_dbo__orders') }}
 ),
-src_order_items AS (
-    SELECT * 
-    FROM {{ source('sql_server_dbo', 'order_items') }}
-),
-src_products AS (
-    SELECT * 
-    FROM {{ source('sql_server_dbo', 'products') }}
+
+unique_shipping_services AS(
+    SELECT DISTINCT
+        shipping_service_id,
+        shipping_service_name AS name
+    FROM base_orders
 )
 
+SELECT * FROM unique_shipping_services
