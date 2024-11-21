@@ -7,7 +7,7 @@ models:
       contract:
         enforced: false
     description: >
-      Information about promotions applied to orders
+      Information about users
     columns:
       - name: user_id
         data_type: varchar
