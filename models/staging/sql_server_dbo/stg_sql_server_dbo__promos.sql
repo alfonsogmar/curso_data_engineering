@@ -13,7 +13,7 @@ renamed_casted_hashed AS (
     SELECT
         {{ dbt_utils.generate_surrogate_key(['promo_id']) }} AS promo_id,
         promo_id AS promo_desc,
-        to_numeric((discount/100), 5, 2) AS discount,
+        discount::NUMBER(5, 0) AS discount,
         (status='active') AS is_active,
         CONVERT_TIMEZONE( 'UTC' , _fivetran_synced ) AS load_date
     FROM src_promos
