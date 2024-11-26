@@ -2,19 +2,77 @@ version: 2
 
 models:
   - name: stg_sql_server_dbo__promos
-    # latest_version: 1
+    #latest_version: 1
+    #versions:
     config:
       materialized: view
       contract:
         enforced: false
     description: >
-      Information about promotions applied to orders
+      Staging table with information about promotions - SILVER layer
     columns:
       - name: promo_id
         data_type: varchar
+        tests:
+          - unique
+          - not_null
       - name: promo_desc
-        data_type: int
+        data_type: varchar
+        tests:
+          - unique
+          - not_null
       - name: discount
-        data_type: float
+        data_type: int
+        tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              min_value: 0
+              inclusive: true
       - name: date_load
         data_type: TIMESTAMP_NTZ
+
+  
+  - name: stg_sql_server_dbo__users
+    config:
+      materialized: view
+      contract:
+        enforced: false
+    description: Staging table with information about users - SILVER layer
+    columns:
+      - name: user_id
+        data_type: varchar
+        description: Unique identifier
+        tests:
+          - unique
+          - not_null
+      - name: address_id
+        data_type: varchar
+        description: Unique identifier for the user's address
+        tests:
+          - not_null
+          - relationships:
+              field: address_id
+              to: ref('stg_sql_server_dbo__addresses')
+      - name: created_at
+        data_type: TIMESTAMP_NTZ 
+      - name: email
+        data_type: varchar 
+        description: "The user's email address. It must have a valid email address format."
+        tests:
+          - not_null
+          - dbt_expectations.expect_column_values_to_match_regex:
+              regex: ^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$
+      - name: first_name
+        data_type: varchar
+        description: "User's first name"
+      - name: last_name
+        data_type: varchar
+        description: "User's last name"
+      - name: phone_number
+        data_type: varchar
+        description: "User's telephone number"
+      #- name: updated_at
+      #  data_type: TIMESTAMP_NTZ 
+      - name: date_load
+        data_type: TIMESTAMP_NTZ
+        description: "Last time this record was loaded."
