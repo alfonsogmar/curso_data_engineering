@@ -18,4 +18,4 @@ casted_renamed AS(
     FROM src_order_items
 )
 
-SELECT * FROM casted_with_surrogate_key
+SELECT * FROM casted_renamed
