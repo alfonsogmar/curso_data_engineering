@@ -22,6 +22,12 @@ sources:
         columns:
           - name: _row
           - name: product_id
+            tests:
+                - not_null
           - name: quantity
+            tests:
+              - not_null
           - name: month
+            tests:
+              - not_null
           - name: _fivetran_synced
