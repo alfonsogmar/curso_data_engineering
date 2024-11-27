@@ -13,6 +13,7 @@ order_fields AS(
     SELECT
         order_id,
         status,
+        promo_id,
         tracking_id,
         created_at_utc,
         delivered_at_utc,

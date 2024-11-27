@@ -12,8 +12,9 @@ WITH src_order_items AS (
 casted_with_surrogate_key AS(
     SELECT
         {{ dbt_utils.generate_surrogate_key(['order_id','product_id']) }} AS order_item_id,
-        order_id::VARCHAR AS order_id,
-        product_id::VARCHAR AS product_id
+        order_id::VARCHAR(40) AS order_id,
+        product_id::VARCHAR(40) AS product_id,
+        quantity::INT AS quantity
     FROM src_order_items
 )
 

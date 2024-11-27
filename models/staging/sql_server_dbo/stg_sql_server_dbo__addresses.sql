@@ -11,11 +11,11 @@ WITH src_addresses AS (
 
 renamed_casted AS (
     SELECT
-        address_id::VARCHAR AS address_id,
-        address::VARCHAR AS address,
-        zipcode::VARCHAR AS zipcode,
-        country::VARCHAR AS country,
-        state::VARCHAR AS state,
+        address_id::VARCHAR(40) AS address_id,
+        address::VARCHAR(100) AS address,
+        zipcode::VARCHAR(5) AS zipcode,
+        country::VARCHAR(20) AS country,
+        state::VARCHAR(20) AS state,
         CONVERT_TIMEZONE('UTC', _fivetran_synced) AS load_date_utc
     FROM src_addresses
     )
