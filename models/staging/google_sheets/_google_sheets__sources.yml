@@ -1,3 +1,4 @@
+
 version: 2
 
 sources:
@@ -27,6 +28,9 @@ sources:
           - name: quantity
             tests:
               - not_null
+              - dbt_utils.accepted_range:
+                  min_value: 0
+                  inclusive: true
           - name: month
             tests:
               - not_null

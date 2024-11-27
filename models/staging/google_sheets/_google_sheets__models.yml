@@ -1,0 +1,28 @@
+version: 2
+
+models:
+  - name: stg_google_sheets__budget
+    config:
+        materialized: view
+        contract:
+          enforced: false
+    description: >
+      Staging table with information about the monthly expected sales for every product - SILVER layer
+      columns:
+        - name: product_id
+          description: >
+            Unique product identifier
+          data_type: varchar
+          tests:
+            - not_null
+        - name: quantity
+          data_type: int
+          tests:
+            - not_null
+        - name: month
+          data_type: date
+          tests:
+            - not_null
+            - dbt_utils.accepted_range:
+                min_value: 0
+                inclusive: true
