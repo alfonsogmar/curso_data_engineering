@@ -15,7 +15,7 @@ casted_renamed AS(
         price::NUMERIC(5,2) AS price,
         name::VARCHAR(50) AS name,
 	    inventory::INT AS inventory
-    FROM src_order_items
+    FROM src_products
 )
 
 SELECT * FROM casted_renamed
