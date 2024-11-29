@@ -15,10 +15,9 @@ selected_fields AS (
         first_name,
         last_name,
         email,
-        address_id, -- mejor hacer join con tabla de addresses
+        address_id,
         phone_number
     FROM stg_users
 )
-
 
 SELECT * FROM selected_fields

@@ -21,7 +21,7 @@ models:
         tests:
           - unique
           - not_null
-      - name: discount
+      - name: discount_usd
         data_type: int
         tests:
           - not_null
