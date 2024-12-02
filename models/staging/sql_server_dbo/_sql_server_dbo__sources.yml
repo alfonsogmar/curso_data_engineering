@@ -90,6 +90,7 @@ sources:
             tests:
                 - not_null
           - name: shipping_service
+                - not_null
           - name: status
             tests:
                 - not_null
