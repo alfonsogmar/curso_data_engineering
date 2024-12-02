@@ -12,11 +12,9 @@ WITH base_orders AS (
 order_fields AS(
     SELECT
         order_id,
-        status,
         promo_id,
         tracking_id,
         created_at_utc,
-        delivered_at_utc,
         estimated_delivery_at_utc
     FROM base_orders
 )
