@@ -6,7 +6,7 @@
 
 WITH src_users AS (
     SELECT * 
-    FROM {{ source('sql_server_dbo', 'users') }}
+    FROM {{ ref('user_snapshot') }}
 ),
 
 renamed_casted AS (
@@ -20,8 +20,11 @@ renamed_casted AS (
         phone_number::VARCHAR(12) AS phone_number,
         --total_orders,    No se usará en nuestro data warehouse, todos los valores son nulos
         email::VARCHAR(50) AS email,
-        CONVERT_TIMEZONE('UTC', _fivetran_synced)  AS load_date_utc
+        CONVERT_TIMEZONE('UTC', _fivetran_synced)  AS load_date_utc,
+        CONVERT_TIMEZONE('UTC', dbt_valid_from) AS valid_from,
+        CONVERT_TIMEZONE('UTC', dbt_valid_to) AS valid_to,
+        (dbt_valid_to IS NULL) AS is_current
     FROM src_users
-    )
+)
 
 SELECT * FROM renamed_casted
