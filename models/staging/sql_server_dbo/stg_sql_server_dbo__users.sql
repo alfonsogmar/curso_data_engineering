@@ -21,8 +21,8 @@ renamed_casted AS (
         --total_orders,    No se usará en nuestro data warehouse, todos los valores son nulos
         email::VARCHAR(50) AS email,
         CONVERT_TIMEZONE('UTC', _fivetran_synced)  AS load_date_utc,
-        CONVERT_TIMEZONE('UTC', dbt_valid_from) AS valid_from,
-        CONVERT_TIMEZONE('UTC', dbt_valid_to) AS valid_to,
+        CONVERT_TIMEZONE('UTC', dbt_valid_from) AS valid_from_utc,
+        CONVERT_TIMEZONE('UTC', dbt_valid_to) AS valid_to_utc,
         (dbt_valid_to IS NULL) AS is_current
     FROM src_users
 )
