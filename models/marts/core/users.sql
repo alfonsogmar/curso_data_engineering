@@ -15,7 +15,6 @@ selected_fields AS (
         first_name,
         last_name,
         email,
-        address_id,
         phone_number
     FROM stg_users
 )
