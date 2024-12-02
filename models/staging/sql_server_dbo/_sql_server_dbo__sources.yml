@@ -93,6 +93,8 @@ sources:
           - name: status
             tests:
                 - not_null
+                - accepted_values:
+                    values: ["preparing", "shipped", "delivered"]
           - name: tracking_id
           - name: user_id
             tests:
