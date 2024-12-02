@@ -1,4 +1,4 @@
-SELECT * FROM {{ ref('stg_sql_server_dbo__orders') }}
+SELECT * FROM {{ ref('base_sql_server_dbo__orders') }}
 WHERE
     NOT (
         delivered_at_utc IS Null
