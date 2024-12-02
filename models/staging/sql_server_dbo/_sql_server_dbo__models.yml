@@ -71,8 +71,9 @@ models:
       - name: phone_number
         data_type: varchar
         description: "User's telephone number"
-      #- name: updated_at
-      #  data_type: TIMESTAMP_NTZ 
+      - name: updated_at
+        data_type: TIMESTAMP_NTZ
+        description: "When the user's data has been updated."
       - name: date_load
         data_type: TIMESTAMP_NTZ
         description: "Last time this record was loaded."

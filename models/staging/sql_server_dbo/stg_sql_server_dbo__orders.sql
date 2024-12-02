@@ -12,6 +12,7 @@ WITH base_orders AS (
 order_fields AS(
     SELECT
         order_id,
+        address_id,
         promo_id,
         tracking_id,
         created_at_utc,
