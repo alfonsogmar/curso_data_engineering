@@ -23,7 +23,12 @@ orders_users AS (
     JOIN
         stg_users usr
     ON
-        ord.user_id = usr.user_id
+        ord.user_id = usr.user_id AND 
+        ord.created_at_utc >= usr.valid_from_utc AND (
+            usr.is_current
+            OR
+            ord.created_at_utc <= usr.valid_to_utc
+        )
 ),
 
 selected_fields AS (
