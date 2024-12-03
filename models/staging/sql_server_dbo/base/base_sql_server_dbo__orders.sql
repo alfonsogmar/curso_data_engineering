@@ -41,4 +41,4 @@ renamed_casted_no_empy_values AS (
     FROM src_orders
 )
 
-SELECT * FROM renamed_casted_no_empy_values
+SELECT * FROM renamed_casted_no_empty_values
