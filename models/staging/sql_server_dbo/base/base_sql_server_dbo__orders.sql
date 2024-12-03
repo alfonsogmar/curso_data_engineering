@@ -1,6 +1,8 @@
 {{
   config(
-    materialized='view'
+    materialized='incremental',
+    unique_key='order_id',
+    incremental_strategy='merge'
   )
 }}
 
@@ -9,7 +11,7 @@ WITH src_orders AS (
     FROM {{ source('sql_server_dbo', 'orders') }}
 ),
 
-renamed_casted_no_empy_values AS (
+renamed_casted_no_empty_values AS (
     SELECT
         order_id::VARCHAR(40) AS order_id,
         user_id::VARCHAR(40) AS user_id,
@@ -39,6 +41,12 @@ renamed_casted_no_empy_values AS (
         CONVERT_TIMEZONE('UTC', estimated_delivery_at) AS estimated_delivery_at_utc,
         CONVERT_TIMEZONE('UTC', _fivetran_synced) AS load_date_utc
     FROM src_orders
+
+    {% if is_incremental() %}
+
+    where _fivetran_synced >= (select coalesce(max(load_date_utc),'1900-01-01') from {{ this }} )
+
+    {% endif %}
 )
 
-SELECT * FROM renamed_casted_no_empy_values
+SELECT * FROM renamed_casted_no_empty_values
