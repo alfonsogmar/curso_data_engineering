@@ -14,6 +14,11 @@ stg_users AS (
     FROM {{ ref('stg_sql_server_dbo__users') }}
 ),
 
+stg_orders_evolution AS (
+    SELECT * 
+    FROM {{ ref('stg_sql_server_dbo__orders_evolution') }}
+),
+
 orders_users AS (
     SELECT
         ord.*,
@@ -29,6 +34,30 @@ orders_users AS (
             OR
             ord.created_at_utc <= usr.valid_to_utc
         )
+),
+
+current_orders_status AS (
+    SELECT 
+        order_id,
+        status,
+        delivered_at_utc
+    FROM
+        stg_orders_evolution    
+    WHERE
+        is_current = TRUE
+),
+
+current_orders_users AS (
+    SELECT
+        orders_users.*,
+        current_orders_status.status,
+        current_orders_status.delivered_at_utc
+    FROM
+        orders_users
+    JOIN
+        current_orders_status
+    ON
+        orders_users.order_id = current_orders_status.order_id
 ),
 
 selected_fields AS (
