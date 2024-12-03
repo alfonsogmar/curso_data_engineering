@@ -77,7 +77,7 @@ sources:
               - unique
               - relationships:
                   field: order_id
-                  to: source('sql_server_dbo','orders')
+                  to: source('sql_server_dbo','order_items')
           - name: order_total
           - name: promo_id
             tests:
