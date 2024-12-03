@@ -22,7 +22,7 @@ casted_with_surrogate_key AS(
 
     {% if is_incremental() %}
 
-    where _fivetran_synced >= (select coalesce(max(_fivetran_synced),'1900-01-01') from {{ this }} )
+    where _fivetran_synced >= (select coalesce(max(load_date_utc),'1900-01-01') from {{ this }} )
 
     {% endif %}
 )
