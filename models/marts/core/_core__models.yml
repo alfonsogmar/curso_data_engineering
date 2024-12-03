@@ -1,0 +1,21 @@
+version: 2
+
+models:
+  - name: users
+    config:
+      materialized: table
+      contract:
+        enforced: false
+    description: >
+      Information about users
+    columns:
+      - name: user_id
+        data_type: varchar
+      - name: first_name
+        data_type: varchar
+      - name: last_name
+        data_type: varchar
+      - name: address_id
+        data_type: varchar
+      - name: phone_number
+        data_type: varchar
