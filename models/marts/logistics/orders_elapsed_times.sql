@@ -26,8 +26,8 @@ elapsed_times AS (
 grouped_by_order AS (
     SELECT
         order_id,
-        MAX(elapsed_preparation_time) AS elapsed_preparation_time,
-        MAX(elapsed_delivery_time) AS elapsed_delivery_time 
+        MAX(elapsed_preparation_time) AS elapsed_preparation_time_seconds,
+        MAX(elapsed_delivery_time) AS elapsed_delivery_time_seconds 
     FROM elapsed_times
     GROUP BY order_id
     ORDER BY 3, 2

@@ -18,14 +18,14 @@ models:
           - relationships:
               field: order_id
               to: ref('base_sql_server_dbo__orders')
-      - name: elapsed_preparation_time
+      - name: elapsed_preparation_time_seconds
         data_type: int
         description: How long has the order been in 'preparing' status, in seconds. Set to null if the order still has that status.
         tests:
           - dbt_utils.accepted_range:
               min_value: 0
               inclusive: true
-      - name: elapsed_delivery_time
+      - name: elapsed_delivery_time_seconds
         data_type: int
         description: How long has the order been in 'shipped' status, in seconds. Set to null if the order still has 'preparing' or 'shipped' status.
         tests:
