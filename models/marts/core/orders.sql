@@ -19,6 +19,16 @@ stg_orders_evolution AS (
     FROM {{ ref('stg_sql_server_dbo__orders_evolution') }}
 ),
 
+stg_order_costs AS (
+    SELECT * 
+    FROM {{ ref('stg_sql_server_dbo__order_costs') }}
+),
+
+stg_shipping_costs AS (
+    SELECT * 
+    FROM {{ ref('stg_sql_server_dbo__shipping_costs') }}
+),
+
 orders_users AS (
     SELECT
         ord.*,
@@ -60,6 +70,26 @@ current_orders_users AS (
         orders_users.order_id = current_orders_status.order_id
 ),
 
+
+current_orders_with_costs AS (
+    SELECT
+        current_orders_users.*,
+        stg_order_costs.order_cost_usd,
+        stg_order_costs.order_total_usd,
+        stg_shipping_costs.shipping_cost_usd
+    FROM
+        current_orders_users
+    JOIN
+        stg_order_costs
+    ON
+        current_orders_users.order_id = stg_order_costs.order_id
+    JOIN
+        stg_shipping_costs
+    ON
+        current_orders_users.order_id = stg_shipping_costs.order_id
+
+),
+
 selected_fields AS (
     SELECT
         order_id,
@@ -67,10 +97,14 @@ selected_fields AS (
         user_id,
         user_address_id,
         created_at_utc,
-        tracking_id,
         promo_id,
-        estimated_delivery_at_utc
-    FROM orders_users
+        status,
+        delivered_at_utc,
+        estimated_delivery_at_utc,
+        order_cost_usd,
+        order_total_usd,
+        shipping_cost_usd
+    FROM current_orders_with_costs
 )
 
 SELECT * FROM selected_fields
