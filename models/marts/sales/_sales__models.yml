@@ -1,0 +1,54 @@
+version: 2
+
+models:
+  - name: actual_vs_budgeted_sales
+    config:
+        materialized: table
+        contract:
+          enforced: false
+    description: >
+      Data that compares the monthly budgeted sales with the actual monthly sales of every product - GOLD layer
+    columns:
+      - name: month
+        data_type: date
+        description: Last day of the month from which we want to know the sales of a given product.
+        tests:
+          - not_null
+      - name: product_id
+        data_type: varchar
+        description: Unique product identifier.
+        tests:
+          - not_null
+          - relationships:
+              field: product_id
+              to: ref('base_sql_server_dbo__products')
+      - name: budgeted_sales
+        data_type: int
+        description: Number of total budgeted sales of a given product in a given month.
+        tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              min_value: 0
+              inclusive: true
+      - name: actual_sales
+        data_type: int
+        description: Number of total actual sales of a given product in a given month.
+        tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              min_value: 0
+              inclusive: true
+      - name: sales_difference
+        data_type: int
+        description: Difference between the total budgeted sales and total actual sales of a given product in a given month.
+        tests:
+          - not_null
+      - name: expectations_met
+        data_type: boolean
+        description: Flag that shows if the actual monthly sales of a given product have reached the budgeted monthly sales. Set to truth if 'actual_sales' is greater than or equal to 'budgeted_sales'. Set to false otherwise.
+        tests:
+          - not_null
+          - accepted_values:
+              values: [true, false]
+              quote: false
+          
