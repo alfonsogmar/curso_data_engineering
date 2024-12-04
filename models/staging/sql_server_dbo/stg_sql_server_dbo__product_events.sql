@@ -13,6 +13,7 @@ product_event_fields AS (
     SELECT
         event_id,
         product_id,
+        event_type_id
     FROM base_events
     WHERE product_id != ''
 )
