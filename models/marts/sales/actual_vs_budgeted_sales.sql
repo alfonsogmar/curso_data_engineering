@@ -50,8 +50,8 @@ actual_vs_budgeted AS (
         stg_budget.product_id,
         stg_budget.quantity AS budgeted_sales,
         total_sold_products.quantity AS actual_sales,
-        total_sold_products.quantity-stg_budget.quantity AS sales_differenced,
-        ( total_sold_products.quantity-stg_budget.quantity)>=0 AS expectations_met
+        total_sold_products.quantity-stg_budget.quantity AS sales_difference,
+        (total_sold_products.quantity-stg_budget.quantity)>=0 AS expectations_met
     FROM
         stg_budget
     JOIN

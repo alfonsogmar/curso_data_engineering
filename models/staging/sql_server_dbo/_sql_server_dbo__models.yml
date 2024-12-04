@@ -1,6 +1,195 @@
 version: 2
 
 models:
+
+  - name: base_sql_server_dbo__events
+    description: >
+      Base incremental table with all event-related fields - SILVER layer
+    columns:
+      - name: event_id
+        data_type: varchar
+        description: >
+          Unique event identifier.
+        tests:
+          - unique
+          - not_null
+      - name: event_type_id
+        data_type: varchar
+        description: >
+          Unique event type identifier.
+        tests:
+          - not_null
+          - relationships:
+              to: ref('stg_sql_server_dbo__event_types')
+              field: event_type_id
+      - name: event_type
+        data_type: varchar
+        description: >
+          Event type description.
+        tests:
+          - not_null
+      - name: order_id
+        data_type: varchar
+        description: >
+          Unique order identifier. Can be empty.
+        tests:
+          - not_null
+      - name: page_url
+        data_type: varchar
+        description: >
+          URL of the webpage where the event took place.
+        tests:
+            - not_null
+      - name: product_id
+        data_type: varchar
+        description: >
+          Unique product identifier. Can be empty.
+        tests:
+          - not_null
+      - name: session_id
+        data_type: varchar
+        description: >
+          Unique session identifier.
+        tests:
+          - not_null
+      - name: user_id
+        data_type: varchar
+        description: >
+          Unique user identifier.
+        tests:
+          - not_null
+      - name: created_at_utc
+        data_type: timestamp
+        description: >
+          When it was created.
+        tests:
+          - not_null
+      - name: load_date_utc
+        data_type: timestamp
+        description: >
+          When it was loaded into the system.
+        tests:
+          - not_null
+          
+
+  - name: base_sql_server_dbo__orders
+    description: >
+      Base incremental table with all order-related fields - SILVER layer
+    columns:
+      - name: order_id
+        data_type: varchar
+        description: >
+          Unique order identifier.
+        tests:
+          - not_null
+          - unique
+      - name: user_id
+        data_type: varchar
+        description: >
+          Unique user identifier.
+        tests:
+          - not_null
+          - relationships:
+              to: ref('stg_sql_server_dbo__users')
+              field: user_id
+      - name: shipping_service_id
+        data_type: varchar
+        description: >
+          Unique shipping service company identifier.
+        tests:
+          - not_null
+          - relationships:
+              to: ref('stg_sql_server_dbo__shipping_services')
+              field: shipping_service_id
+      - name: shipping_service_name
+        data_type: varchar
+        description: >
+          Name of the shipping service company.
+        tests:
+          - not_null
+      - name: address_id
+        data_type: varchar
+        description: >
+          Unique delivery address identifier.
+        tests:
+          - not_null
+          - relationships:
+              to: ref('stg_sql_server_dbo__addresses')
+              field: address_id
+      - name: promo_id
+        data_type: varchar
+        description: >
+          Unique promotion identifier.
+        tests:
+          - not_null
+          - relationships:
+              to: ref('stg_sql_server_dbo__promos')
+              field: promo_id
+      - name: order_cost_usd
+        data_type: float
+        description: >
+          Costs of the ordered products.
+        tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              min_value: 0
+              inclusive: true
+      - name: order_total_usd
+        data_type: float
+        description: >
+          Total cost of the order.
+        tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              min_value: 0
+              inclusive: true
+      - name: shipping_cost_usd
+        data_type: float
+        description: >
+          Cost of the shipping service.
+        tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              min_value: 0
+              inclusive: true
+      - name: status
+        data_type: varchar
+        description: >
+          Status of the order regarding it's shippment and delivery.
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['preparing', 'shipped', 'delivered']
+      - name: tracking_id
+        data_type: varchar
+        description: >
+          Identifier that allows the user to track their order.
+        tests:
+          - not_null
+      - name: created_at_utc
+        data_type: varchar
+        description: >
+          When it was created
+        tests:
+          - not_null
+      - name: delivered_at_utc
+        data_type: timestamp
+        description: >
+          When the order was delivered. Set to null if the status is not 'delivered'.
+      - name: estimated_delivery_at_utc
+        data_type: timestamp
+        description: >
+          When the order is expected to be delivered. Can be null.
+      - name: load_date_utc
+        data_type: timestamp
+        description: >
+          When it was loaded into the system.
+        tests:
+          - not_null
+        
+
+
+
   - name: stg_sql_server_dbo__promos
     #latest_version: 1
     #versions:
@@ -13,23 +202,39 @@ models:
     columns:
       - name: promo_id
         data_type: varchar
+        description: >
+          Unique promotion identifier.
         tests:
           - unique
           - not_null
       - name: promo_desc
         data_type: varchar
+        description: >
+          Description of the promotion.
         tests:
           - unique
           - not_null
       - name: discount_usd
         data_type: int
+        description: >
+          Dolars to be discounted from the total cost.
         tests:
           - not_null
           - dbt_utils.accepted_range:
               min_value: 0
               inclusive: true
-      - name: date_load
-        data_type: TIMESTAMP_NTZ
+      - name: is_active
+        data_type: boolean
+        description: Flag to show if the promotion is still active in the present.
+        tests:
+          - not_null
+          - accepted_values:
+              values: [true, false]
+              quote: false
+      - name: date_load_utc
+        description: >
+          When it was loaded into the system.
+        data_type: timestamp
 
   
   - name: stg_sql_server_dbo__users
@@ -41,7 +246,7 @@ models:
     columns:
       - name: user_id
         data_type: varchar
-        description: Unique identifier
+        description: Unique user identifier.
         tests:
           - unique
           - not_null
@@ -54,7 +259,7 @@ models:
               field: address_id
               to: ref('stg_sql_server_dbo__addresses')
       - name: created_at
-        data_type: TIMESTAMP_NTZ 
+        data_type: timestamp 
       - name: email
         data_type: varchar 
         description: "The user's email address. It must have a valid email address format."
@@ -72,8 +277,8 @@ models:
         data_type: varchar
         description: "User's telephone number"
       - name: updated_at
-        data_type: TIMESTAMP_NTZ
+        data_type: timestamp
         description: "When the user's data has been updated."
       - name: date_load
-        data_type: TIMESTAMP_NTZ
+        data_type: timestamp
         description: "Last time this record was loaded."
