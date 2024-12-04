@@ -43,7 +43,7 @@ stg_product_events AS (
 
 
 
-product_views_chart_additions AS (
+product_views_cart_additions AS (
     SELECT
         prde.product_id,
         SUM(
@@ -51,7 +51,7 @@ product_views_chart_additions AS (
                 WHEN et.event_type_desc = 'add_to_cart' THEN 1
                 ELSE 0
             END
-        ) AS times_added_to_chart,
+        ) AS times_added_to_cart,
         SUM(
             CASE
                 WHEN et.event_type_desc = 'page_view' THEN 1
@@ -64,16 +64,16 @@ product_views_chart_additions AS (
     GROUP BY prde.product_id
 ),
 
-product_views_chart_additions_orders AS (
+product_views_cart_additions_orders AS (
     SELECT
         opp.product_id,
         opp.name,
         pvca.page_views,
-        pvca.times_added_to_chart,
+        pvca.times_added_to_cart,
         opp.times_purchased,
         round(opp.times_purchased/pvca.page_views, 2)::NUMERIC(5,2) AS likelihood_to_purchase
     FROM
-        product_views_chart_additions pvca
+        product_views_cart_additions pvca
     JOIN
         orders_per_product opp
     ON 
@@ -81,4 +81,4 @@ product_views_chart_additions_orders AS (
     ORDER BY 6 DESC
 )
 
-SELECT * FROM product_views_chart_additions_orders
+SELECT * FROM product_views_cart_additions_orders

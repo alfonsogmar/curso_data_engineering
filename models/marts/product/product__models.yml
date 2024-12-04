@@ -1,0 +1,144 @@
+version: 2
+
+models:
+  - name: user_sessions
+    config:
+        materialized: table
+        contract:
+          enforced: false
+    description: >
+      Data with information about every user's session - GOLD layer
+    columns:
+      - name: session_id
+        data_type: varchar
+        description: Unique session identifier
+        tests:
+          - unique
+          - not_null
+          - relationships:
+              field: session_id
+              to: ref('base_sql_server_dbo__events')
+      - name: user_id
+        data_type: varchar
+        description: Unique user identifier
+        tests:
+          - not_null
+          - relationships:
+              field: user_id
+              to: ref('stg_sql_server_dbo__users')
+      - name: first_name
+        data_type: varchar
+        description: User's first name
+        tests:
+          - not_null
+      - name: email
+        data_type: varchar
+        description: User's email address. It must have a valid email format.
+        tests:
+          - not_null
+          - dbt_expectations.expect_column_values_to_match_regex:
+              regex: ^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$
+      - name: first_event_time_utc
+        data_type: timestamp
+        description: The time the session started. Time of the session's fist event.
+        tests:
+          - not_null
+      - name: last_event_time_utc
+        data_type: timestamp
+        description: The time the session ended. Time of the session's last event.
+        tests:
+          - not_null
+      - name: session_length_minutes
+        data_type: int
+        description: How long the session was, in minutes.
+        tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              min_value: 0
+              inclusive: true
+      - name: page_view
+        data_type: int
+        description: Number of page_view events in the session.
+        tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              min_value: 0
+              inclusive: true
+      - name: add_to_cart
+        data_type: int
+        description: Number of add_to_cart events in the session.
+        tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              min_value: 0
+              inclusive: true
+      - name: checkout
+        data_type: int
+        description: Number of checkout events in the session.
+        tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              min_value: 0
+              inclusive: true
+      - name: package_shipped
+        data_type: int
+        description: Number of package_shipped events in the session.
+        tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              min_value: 0
+              inclusive: true
+  - name: product_purchases_vs_views
+    config:
+        materialized: table
+        contract:
+          enforced: false
+    description: >
+      Comparison between the number of times a product's page has been viewed, adn the number of times it has been purchased and added to the chart - GOLD layer
+    columns:
+      - name: product_id
+        data_type: varchar
+        description: Product unique identifier
+        tests:
+          - not_null
+          - relationships:
+              field: product_id
+              to: ref('stg_sql_server_dbo__products')
+      - name: name
+        data_type: varchar
+        description: The name of the product
+        tests:
+          - not_null
+      - name: page_views
+        data_type: int
+        description: Number times the product's page has been viewed.
+        tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              min_value: 0
+              inclusive: true
+      - name: times_added_to_cart
+        data_type: int
+        description: Number times the product has been added to cart.
+        tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              min_value: 0
+              inclusive: true
+      - name: times_purchased
+        data_type: int
+        description: Number of orders the product has been included in.
+        tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              min_value: 0
+              inclusive: true
+      - name: likelihood_to_purchase
+        data_type: float
+        description: How likely the product will be purchased by an user after they have viewed its page.
+        tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              min_value: 0
+              max_value: 1
+              inclusive: true

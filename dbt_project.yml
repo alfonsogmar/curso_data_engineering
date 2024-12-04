@@ -52,6 +52,13 @@ models:
       +database: "{{ env_var('DBT_ENVIRONMENTS') }}_GOLD_DB"
       core:
         +schema: core
+      product:
+        +schema: product
+      marketing:
+        +schema: marketing
+      logistics:
+        +schema: logistics
+      
 
 seeds:
   +schema: seed_data
