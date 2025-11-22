@@ -1,3 +1,5 @@
+ESP 🇪🇸
+
 # Proyecto final del curso de Data Engineering de Cívica Software
 
 Este repositorio contiene el proyecto final del curso de Data Engineering de 172 horas de duración impartido presencialmente por Cívica Software en sus oficinas.
@@ -16,6 +18,8 @@ Tecnologías usadas:
 * Snowflake (para el data warehouse subyacente que contiened tanto las tablas de origen como las nuevas tablas con datos transformados en las capas gold y silver)
 
 -------------------------------------
+
+ENG 🇺🇸/🇬🇧
 
 # Cívica Software's Data Engineering course final project
 
