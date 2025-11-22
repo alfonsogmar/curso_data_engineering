@@ -9,7 +9,7 @@ Se trata de un proyecto de **dbt** con todas las transformaciones necesarias imp
 Las transformaciones se estructuran desiguiendo una arquitectura Medallion, de forma que:
 * La capa Bronze (*sources*, archivos `yaml`) define las fuentes de datos, que son las tablas de origen con los datos "en crudo" almacenados en Snowflake
 * La capa Silver (*staging*, scripts `SQL`) implementa la limpieza, filtrado y demás transformaciones básicas preliminares como cambios de nombres de columnas, cálculos sencillos para cambios de divisa, etc.
-* La capa Gold (*marts*, scripts `SQL`) implementa las transformaciones finales que implican *joins* y agregaciones, con el fin de generar las tablas necesarias para cada caso de uso, los *data marts*
+* La capa Gold (*marts*, scripts `SQL`) implementa las transformaciones finales, más complejas que las de la capa silver e implican *joins* y agregaciones, con el fin de generar las tablas necesarias para cada caso de uso, los *data marts*
 
 Tecnologías usadas:
 * dbt
@@ -30,7 +30,7 @@ The source code consists of a **dbt** project with all necessary transformations
 The transformations have been implemented following a Medallion architecture:
 * The Bronze layer (*sources*, `yaml` files) defines the source Snowflake tables that contain the raw data
 * The Silver layer (*staging*, `SQL` scripts) implements the data cleansing and filtering, as well as other basic preliminary transformations such as column name changes, currency conversions, etc. 
-* The Gold layer (*marts*, `SQL` scripts) implements bigger transformations that involve joins and aggregations to generate the data marts, which are the final curated tables for every use case 
+* The Gold layer (*marts*, `SQL` scripts) implements more complex transformations that involve joins and aggregations to generate the data marts, which are the final curated tables for every use case 
 
 Used technologies:
 * dbt
